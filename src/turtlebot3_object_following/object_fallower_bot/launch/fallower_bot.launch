@@ -1,0 +1,28 @@
+<launch>
+  <!-- Set TurtleBot3 Model -->
+  <arg name="model" default="waffle"/>
+
+  <!-- Launch Gazebo -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find object_fallower_bot)/worlds/obst.world"/>
+    <arg name="use_sim_time" value="true"/>
+  </include>
+
+  <!-- Load Robot Description -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro"/>
+
+  <!-- Spawn Robot in Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-urdf -param robot_description -model turtlebot3_$(arg model)"/>
+
+  <!-- Robot State Publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+    <param name="use_sim_time" value="true"/>
+  </node>
+
+
+  <node name="fallow_bot_node" pkg="object_fallower_bot" type="fallow_bot.py" output="screen"/>
+  
+  
+</launch>
+
